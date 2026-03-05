@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Музыкальный Плеер</title>
+<style>
+body {
+background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+font-family: Arial, sans-serif;
+color: white;
+}
+.player {
+background: #111;
+padding: 25px;
+border-radius: 20px;
+text-align: center;
+width: 300px;
+box-shadow: 0 0 40px rgba(255,255,255,0.1);
+}
+.cover {
+width: 100%;
+border-radius: 15px;
+}
+h2 {
+margin: 15px 0 5px;
+font-size: 20px;
+}
+p {
+margin: 0 0 20px;
+color: #aaa;
+font-size: 14px;
+}
+input[type="range"] {
+width: 100%;
+accent-color: #ff4081;
+}
+.controls {
+margin-top: 15px;
+}
+.controls button {
+background: none;
+border: none;
+color: white;
+font-size: 28px;
+margin: 0 15px;
+cursor: pointer;
+transition: 0.2s;
+}
+.controls button:hover {
+color: #ff4081;
+}
+#play {
+font-size: 40px;
+color: #fff;
+text-shadow: 0 0 15px #fff;
+}
+</style>
+</head>
+<body>
+
+<div class="player">
+<img class="cover" id="cover" src="https://i.imgur.com/5qzXKJn.jpg" alt="cover">
+<h2 id="title">Midnight City</h2>
+<p id="artist">Retro Soul</p>
+<input type="range" id="progress" value="0" min="0" max="100">
+<div class="controls">
+<button id="prev">&#9664;</button>
+<button id="play">&#9654;</button>
+<button id="next">&#9654;&#9654;</button>
+</div>
+</div>
+
+<script>
+const tracks = [
+{title: "Midnight City", artist: "Retro Soul", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", cover: "https://i.imgur.com/5qzXKJn.jpg"},
+{title: "Neon Dreams", artist: "Synthwave", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", cover: "https://i.imgur.com/ZXQ2GPo.jpg"},
+{title: "Electric Heart", artist: "Future Beats", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", cover: "https://i.imgur.com/0cP28Sz.jpg"},
+{title: "Night Drive", artist: "City Pop", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3", cover: "https://i.imgur.com/Wx3nMjp.jpg"},
+{title: "Lost in Space", artist: "Chillwave", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", cover: "https://i.imgur.com/6Zb0bzx.jpg"},
+{title: "Cosmic Love", artist: "Retro Soul", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3", cover: "https://i.imgur.com/7nXQHj9.jpg"},
+];
+
+let currentTrack = 0;
+const audio = new Audio(tracks[currentTrack].src);
+
+const cover = document.getElementById('cover');
+const title = document.getElementById('title');
+const artist = document.getElementById('artist');
+const playBtn = document.getElementById('play');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+const progress = document.getElementById('progress');
+
+function loadTrack(index) {
+audio.src = tracks[index].src;
+title.textContent = tracks[index].title;
+artist.textContent = tracks[index].artist;
+cover.src = tracks[index].cover;
+audio.load();
+}
+
+playBtn.addEventListener('click', () => {
+if(audio.paused) {
+audio.play();
+playBtn.textContent = '❚❚';
+} else {
+audio.pause();
+playBtn.textContent = '▶';
+}
+});
+
+prevBtn.addEventListener('click', () => {
+currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+loadTrack(currentTrack);
+audio.play();
+playBtn.textContent = '❚❚';
+});
+
+nextBtn.addEventListener('click', () => {
+currentTrack = (currentTrack + 1) % tracks.length;
+loadTrack(currentTrack);
+audio.play();
+playBtn.textContent = '❚❚';
+});
+
+audio.addEventListener('timeupdate', () => {
+const percent = (audio.currentTime / audio.duration) * 100;
+progress.value = percent || 0;
+});
+
+progress.addEventListener('input', () => {
+audio.currentTime = (progress.value / 100) * audio.duration;
+});
+</script>
+
+</body>
+</html>
